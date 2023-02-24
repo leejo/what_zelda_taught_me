@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>What Zelda Taught Me About Non-Deterministic Polynomial Time Complexity</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style type="text/css">
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; }
+      pre { font-size: 80%; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+	  img {
+         max-width: 90%;
+         display: block;
+         margin-left: auto;
+         margin-right: auto;
+	  }
+	  .remark-slide-content {
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: cover;
+	  }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# What Zelda Taught Me About Non-Deterministic Polynomial Time Complexity
+
+![link_zelda](img/link-to-the-past.png)
+
+Lee Johnson (LEEJO / leejo / lee@humanstate.com)
+
+???
+
+When you rediscover one of your favourite childhood games
+
+Note: Left = Link, Right = Zelda
+
+---
+
+## The Legend of Zelda: A Link to the Past
+
+--
+
+* First released for The Super Nintendo in late 1991
+
+--
+
+* Played this when i was a kid in 1993, thirty years ago!
+
+--
+
+* I think it took me most of a summer to complete
+
+???
+
+What does completing it require?
+
+---
+
+## The Legend of Zelda: A Link to the Past ("ALTTP")
+
+![:scale 75%](img/linear/01.png)
+
+???
+
+Storm the castle to rescue Zelda
+
+---
+
+## The Legend of Zelda: A Link to the Past ("ALTTP")
+
+![:scale 75%](img/linear/02.png)
+
+???
+
+Collect the three pendants
+
+---
+
+## The Legend of Zelda: A Link to the Past ("ALTTP")
+
+![:scale 75%](img/linear/03.png)
+
+???
+
+To get the master sword to defeat Aga
+
+... Link likes to hold things in the air
+
+---
+
+## The Legend of Zelda: A Link to the Past ("ALTTP")
+
+![:scale 75%](img/linear/04.png)
+
+???
+
+Get transported into the dark world
+
+---
+
+## The Legend of Zelda: A Link to the Past ("ALTTP")
+
+![:scale 75%](img/linear/05.png)
+
+???
+
+Where you collect seven crystals
+
+---
+
+## The Legend of Zelda: A Link to the Past ("ALTTP")
+
+![:scale 75%](img/linear/06.png)
+
+???
+
+Which frees seven maidens
+
+---
+
+## The Legend of Zelda: A Link to the Past ("ALTTP")
+
+![:scale 75%](img/linear/07.png)
+
+???
+
+To break the seal on Ganon's tower
+
+---
+
+## The Legend of Zelda: A Link to the Past ("ALTTP")
+
+![:scale 75%](img/linear/08.png)
+
+???
+
+So you can defeat Ganon
+
+---
+
+## The Legend of Zelda: A Link to the Past ("ALTTP")
+
+![:scale 75%](img/linear/10.png)
+
+???
+
+Saving Hyrule 🎉
+
+---
+
+## The Legend of Zelda: A Link to the Past ("ALTTP")
+
+Simple!
+
+--
+
+* It's a relatively linear game
+
+--
+
+* The key: it opens up by you collecting various items
+
+  * That grant progression through their use
+
+--
+
+* It's possible to play the vanilla game a little out of order
+
+--
+
+* But the vanilla item progression largely restricts that
+
+---
+
+## AGDQ (Awesome Games Done Quick)
+
+--
+
+* Like many games, people started speed running ALTTP
+
+???
+
+where you try to complete the game as quickly as possible
+
+i don't find this very interesting
+
+because it essentially becomes a grind and dependent on RNG (i.e. luck)
+
+--
+
+* Current NMG record is about 1h22m
+
+???
+
+NMG - no major glitches
+
+--
+
+* AGDQ is a charity speed running event
+
+--
+
+* Happens [now] a few times a year
+
+--
+
+* They live stream and later upload videos of the runs to YouTube
+
+--
+
+* First encounter with the randomizer (late 2018?) due to the YouTube algorithm
+
+???
+
+I'd occassionaly watch speed runs out of not-quite-morbid curiosity
+
+like: Final Fantasy VII completed in 7 hours, or something ridiculous like that
+
+the algorithm of course started chucking other AGDQ videos at me
+
+---
+
+## The Randomizer?
+
+--
+
+* A patched version of the game where items are shuffled
+
+--
+
+* There are 216 items in the original game
+
+--
+
+* Shuffling the items changes the possible route through the game
+
+--
+
+* Effectively infinite variations?
+
+--
+
+* The randomizer understands the "logic" of the game
+
+ * It prevents generation of unbeatable games
+
+ * Allows different modes of randomisation
+
+---
+
+## The Randomizer?
+
+--
+
+A patched version of the game might end up with:
+
+--
+
+* ~~Storm the castle to rescue Zelda~~
+
+--
+
+* ~~Collect the three pendants~~
+
+--
+
+* Get the master sword ~~to defeat Aga~~
+
+--
+
+* Get transported into the dark world
+
+--
+
+* *Maybe* rescue seven maidens to break the seal on Ganon's tower
+
+--
+
+* Climb the tower and defeat Ganon, saving Hyrule 🎉
+
+--
+
+* The game is now far less linear
+
+???
+
+because we now only have to complete 7 of 10 dungeons some of the progression items become unnecessary
+
+the randomiser will make them logically accessible, however
+
+if you get those items they could send you on a wild goose chase
+
+---
+
+## The Randomizer (Technicalities)
+
+--
+
+* Originally C#
+
+--
+
+* PHP since 2016 (by initial commit, probably predates that)
+
+--
+
+ * Currently version v31.0.11
+
+ * With v32 in preview
+
+--
+
+* Knows the address space of every item in the game
+
+--
+
+* And the logical requirements to access those items in the game
+
+--
+
+* At first was "simply" randomising items
+
+--
+
+* Now has the option to randomise almost anything:
+ * entrances / locations
+ * bosses / pots / enemies
+ * game mode
+ * etc
+
+---
+
+## The Randomizer (Technicalities)
+
+Checkerboard Cave:
+
+![:scale 75%](img/01_checkerboard_cave.png)
+
+???
+
+to give an example of just one location
+
+---
+
+## The Randomizer (Technicalities)
+
+Checkerboard Cave:
+
+![:scale 75%](img/02_checkerboard_cave.png)
+
+???
+
+in the vanilla game this is a heart piece (IIRC)
+
+in the randmoiser it could be anything... almost
+
+it is accessible relatively late in the vanilla game (about 2/3 of the way through)
+
+but this could be accessible within the first few minutes of playing a seed
+
+a seed is the term given to a randomly generated game, of course
+
+---
+
+## The Randomizer (Technicalities)
+
+Checkerboard Cave:
+
+`app/Region/Standard/LightWorld/South.php`:
+
+```php
+namespace ALttP\Region\Standard\LightWorld;
+
+...
+
+$this->locations = new LocationCollection([
+    ...
+    new Location\Standing("Checkerboard Cave", [0x180005], null, $this),
+    ...
+]);
+
+```
+
+???
+
+On the code side of this
+
+The "location" is actually the address in the rom where the item is
+
+anytime we put something in there we're replacing the data at the referenced address
+
+---
+
+## The Randomizer (Technicalities)
+
+Checkerboard Cave:
+
+
+```php
+$this->locations["Checkerboard Cave"]->setRequirements(
+    function ($locations, $items) {
+
+        return $items->canLiftRocks()
+        && (
+            $items->has('MagicMirror')
+            && $this->world->getRegion('Mire')->canEnter($locations, $items)
+        );
+
+    }
+);
+```
+
+???
+
+but we cannot logically put an item in this place if it is required to access this place
+
+so the code has these checks in place for this particular location
+
+(explain the if checks here)
+
+---
+
+## The Randomizer (Technicalities)
+
+Some of these get pretty involved:
+
+```php
+$this->locations["Ganon's Tower - Moldorm Chest"]
+    ->setRequirements(function ($locations, $items) {
+
+        return $items->has('Hookshot')
+        && $items->canShootArrows($this->world)
+        && $items->canLightTorches()
+        && $items->has('BigKeyA2')
+        && $items->has('KeyA2', 4)
+        && $this->boss_middle->canBeat($items, $locations)
+        && $this->boss_top->canBeat($items, $locations);
+
+    })->setFillRules(function ($item, $locations, $items) {
+
+        return $item != Item::get('KeyA2', $this->world)
+            && $item != Item::get('BigKeyA2', $this->world);
+    });
+```
+
+???
+
+this is the very last chest in the vanilla game
+
+but requirements here are pretty simple as in the vanilla game it is impossible to get to this chest without having obtained every other progression item in the game
+
+---
+
+## The Attraction of The Randomiser
+
+--
+
+* Every new "seed" is a different game
+
+--
+
+* We have about 20 items required to beat the game
+
+--
+
+* And 216 possible locations they can be
+
+--
+
+* We know how to get to those locations
+
+--
+
+* But we want to do it in the optimal order
+
+--
+
+* Sometimes we have interesting routing or logic problems
+
+???
+
+and this is a classic know problem in combinatorial maths / computer science
+---
+
+## The Travelling Salesman (i.e. Link)
+
+--
+
+* An NP-hard routing problem
+
+--
+
+* But here it's more complex than that
+
+--
+
+ * Certain areas are only accessible after getting specific items
+
+--
+
+ * And we don't know where those specific items are
+
+--
+
+* Adding known unknows to an NP-hard problem 🤔
+
+--
+
+* And the route evolves as the items are accessed
+
+--
+
+ * Including dead ends and backtracking 🤨
+
+---
+
+## ~~Solving~~ Creating The Route
+
+--
+
+* The fill algorithm (`app/Filler/RandomAssumed.php`):
+
+```php
+12 class RandomAssumed extends Filler
+13 {
+14     /**
+15      * This fill places items in the first available location that it
+             can possibly be in, assuming that unplaced
+16      * items will be reachable. Those items will then have a smaller
+             set of places that they can be placed.
+17      *
+...
+24      */
+25     public function fill( ... ): void
+26     {
+...
+32         $randomized_order_locations
+               = $this->shuffleLocations($all_locations);
+...
+34         $this->fillItemsInLocations(
+               $dungeon,
+               $randomized_order_locations,
+               ...
+           );
+```
+
+???
+
+the fill algorithm works as the comment says
+
+fillItemsInLocations is where the heart of the logic lies
+
+which hooks into the previously shown logic of location requirements
+
+---
+
+## ~~Solving~~ Creating The Route
+
+--
+
+* Solving the route? That's the fun: you never know what you're gonna get
+
+---
+
+## Let's Generate a Game...
+
+* With DEBUG enabled to show the fill algorithm in action
+
+---
+
+## A Community Built!
+
+---
+
+## A Community Built!
+
+![:scale 75%](img/community/01_discord.png)
+
+???
+
+Discord - several thousand users online at a time
+
+---
+
+## A Community Built!
+
+![:scale 75%](img/community/02_rom_hacks.png)
+
+???
+
+rom hacks (practice roms)
+
+---
+
+## A Community Built!
+
+![:scale 75%](img/community/04_trackers.png)
+
+???
+
+tools (trackers, etc)
+
+---
+
+## A Community Built!
+
+![:scale 75%](img/community/03_races.png)
+
+???
+
+informal races (racetime.gg)
+
+---
+
+## A Community Built!
+
+![:scale 75%](img/community/05_tournaments.png)
+
+???
+
+tournaments
+
+---
+
+## A Community Built!
+
+![:scale 75%](img/community/06_podcasts_and_mentoring.png)
+
+???
+
+podcasts and mentor races
+
+---
+
+## A Community Built!
+
+![:scale 75%](img/community/07_development.png)
+
+???
+
+development communities
+
+---
+
+## A Community Built!
+
+![:scale 75%](img/community/08_streaming.png)
+
+???
+
+streamers
+
+---
+
+## So What Did Zelda Teach Me About Non-Deterministic Polynomial Time Complexity?
+
+--
+
+It's fun, and an enjoyable way to waste a lot of time.
+
+---
+
+## Questions? / References
+
+A Link to the Past Randomizer:
+
+ * [Official Site](https://alttpr.com/en)
+ * [Discord](https://discordapp.com/invite/alttprandomizer)
+ * [Github Repo](https://github.com/sporchia/alttp_vt_randomizer)
+ * [Wiki](http://alttp.mymm1.com/wiki/The_Legend_of_Zelda:_A_Link_to_the_Past)
+
+Travelling Salesman Problem:
+
+ * [The Most Misunderstood Problem](https://www.nomachetejuggling.com/2012/09/14/traveling-salesman-the-most-misunderstood-problem/)
+
+Other:
+
+ * [A Link to the Past Maps](http://ian-albert.com/games/legend_of_zelda_a_link_to_the_past_maps/)
+ * [Dungeon Item Locations Guide](https://maplequeensaku.weebly.com/news/legend-of-zelda-a-link-to-the-past-randomizer-dungeon-item-locations-guide)
+
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+
+        remark.macros['scale'] = function (percentage) {
+            var url = this;
+            return '<center><img src="' + url + '" style="width: ' + percentage + '" /></center>';
+        };
+
+        var slideshow = remark.create({
+            highlightLines: true,
+			slideNumberFormat: ""
+        });
+
+    </script>
+  </body>
+</html>
